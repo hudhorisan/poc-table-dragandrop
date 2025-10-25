@@ -327,7 +327,7 @@ const TablePaginationNew = ({
           width: colWidth,
           className: frozenInfo.frozen ? 'frozen-column-header' : '',
           // Disable sorter and filters if column already has them defined
-          ...(enableColumnSorter && !col.sorter && col.dataIndex && {
+          ...(enableColumnSorter && !col.sorter && !col.disableSorter && col.dataIndex && {
             sorter: (a, b) => {
               const aVal = a[col.dataIndex];
               const bVal = b[col.dataIndex];
@@ -351,6 +351,7 @@ const TablePaginationNew = ({
               const target = e.target;
               if (target.closest('.ant-table-filter-trigger') || 
                   target.closest('.ant-table-column-sorter') ||
+                  target.closest('.ant-table-column-sorters') ||
                   target.closest('.ant-dropdown-trigger')) {
                 e.preventDefault();
                 return;
@@ -359,23 +360,8 @@ const TablePaginationNew = ({
             },
             onDragOver: (e) => handleHeaderDragOver(e, index),
             onDragEnd: handleHeaderDragEnd,
-            onMouseEnter: (e) => {
-              // Change cursor to pointer when hovering sort/filter icons
-              const target = e.target;
-              const th = target.closest('th');
-              if (th && (target.closest('.ant-table-filter-trigger') || 
-                         target.closest('.ant-table-column-sorter'))) {
-                th.style.cursor = 'pointer';
-              }
-            },
-            onMouseLeave: (e) => {
-              const th = e.target.closest('th');
-              if (th && !frozenInfo.frozen) {
-                th.style.cursor = 'move';
-              }
-            },
             style: { 
-              cursor: frozenInfo.frozen ? 'not-allowed' : 'move', 
+              cursor: frozenInfo.frozen ? 'not-allowed' : 'move',
               userSelect: 'none',
               position: 'relative',
               ...(frozenInfo.frozen && {
@@ -393,7 +379,7 @@ const TablePaginationNew = ({
         }
         
         // Add filter FIRST (will appear on left side of header)
-        if (enableColumnFilter && !col.filters && !col.filterDropdown && col.dataIndex) {
+        if (enableColumnFilter && !col.filters && !col.filterDropdown && !col.disableFilter && col.dataIndex) {
           // Get unique values for this column
           const uniqueValues = [...new Set(dataSource.map(item => item[col.dataIndex]))]
             .filter(val => val !== null && val !== undefined && val !== '')
@@ -455,7 +441,7 @@ const TablePaginationNew = ({
       };
       
       // Add sorter for non-draggable mode
-      if (enableColumnSorter && !col.sorter && col.dataIndex) {
+      if (enableColumnSorter && !col.sorter && !col.disableSorter && col.dataIndex) {
         colConfig.sorter = (a, b) => {
           const aVal = a[col.dataIndex];
           const bVal = b[col.dataIndex];
@@ -471,7 +457,7 @@ const TablePaginationNew = ({
       }
       
       // Add filter for non-draggable mode
-      if (enableColumnFilter && !col.filters && !col.filterDropdown && col.dataIndex) {
+      if (enableColumnFilter && !col.filters && !col.filterDropdown && !col.disableFilter && col.dataIndex) {
         const uniqueValues = [...new Set(dataSource.map(item => item[col.dataIndex]))]
           .filter(val => val !== null && val !== undefined && val !== '')
           .sort();

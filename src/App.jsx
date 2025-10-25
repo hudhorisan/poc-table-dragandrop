@@ -23,6 +23,8 @@ const antdColumns = [
     dataIndex: 'id',
     key: 'id',
     width: 80,
+    disableSorter: true,  // ❌ Disable sorting for this column
+    disableFilter: true,  // ❌ Disable filtering for this column
   },
   {
     title: 'Name',
@@ -47,12 +49,14 @@ const antdColumns = [
     dataIndex: 'position',
     key: 'position',
     width: 150,
+    disableFilter: true,  // ❌ Disable filtering only (sorting still enabled)
   },
   {
     title: 'Phone',
     dataIndex: 'phone',
     key: 'phone',
     width: 150,
+    disableSorter: true,  // ❌ Disable sorting only (filtering still enabled)
   },
   {
     title: 'Address',

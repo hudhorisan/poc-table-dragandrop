@@ -50,14 +50,39 @@
 }
 
 /* Ant Design Table - Sort and Filter icons cursor */
+/* Only set cursor on interactive elements when they are hovered */
+.ant-table-filter-trigger:hover,
+.ant-table-filter-trigger:hover *,
+.ant-table-column-sorter:hover,
+.ant-table-column-sorter:hover *,
+.ant-table-column-sorter-up:hover,
+.ant-table-column-sorter-down:hover,
+.ant-table-column-sorter-inner:hover,
+.ant-table-column-sorter-inner:hover *,
+.anticon-filter:hover,
+.anticon-caret-up:hover,
+.anticon-caret-down:hover,
+.anticon-caret-up:hover *,
+.anticon-caret-down:hover * {
+  cursor: pointer !important;
+}
+
+/* Set z-index on interactive elements so they appear above resize-handle */
 .ant-table-filter-trigger,
 .ant-table-column-sorter,
-.ant-table-column-sorter-up,
-.ant-table-column-sorter-down,
 .ant-table-column-sorter-inner,
 .anticon-filter,
 .anticon-caret-up,
 .anticon-caret-down {
+  position: relative;
+  z-index: 1002; /* Higher than resize-handle (1001) */
+}
+
+/* Override th cursor when hovering over sort/filter children */
+.ant-table-thead > tr > th[draggable="true"]:hover .ant-table-filter-trigger,
+.ant-table-thead > tr > th[draggable="true"]:hover .ant-table-column-sorter,
+.ant-table-thead > tr > th[draggable="true"]:hover .ant-table-column-sorter *,
+.ant-table-thead > tr > th[draggable="true"]:hover .ant-table-filter-trigger * {
   cursor: pointer !important;
 }
 
@@ -71,12 +96,6 @@
   flex-direction: column !important;
   align-items: center !important;
   min-width: 16px !important;
-}
-
-/* Prevent dragging when hovering filter/sort */
-.ant-table-thead > tr > th:has(.ant-table-filter-trigger:hover),
-.ant-table-thead > tr > th:has(.ant-table-column-sorter:hover) {
-  cursor: pointer !important;
 }
 
 .draggable-table-wrapper th.frozen-column {

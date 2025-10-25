@@ -233,6 +233,43 @@ freezeColumns={[
 />
 ```
 
+**Disable Sort/Filter for Specific Columns:**
+```jsx
+const columns = [
+  {
+    title: 'ID',
+    dataIndex: 'id',
+    disableSorter: true,   // ❌ No sorting for this column
+    disableFilter: true,   // ❌ No filtering for this column
+  },
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    disableFilter: true,   // ❌ Disable filter only (sorting still enabled)
+  },
+  {
+    title: 'Phone',
+    dataIndex: 'phone',
+    disableSorter: true,   // ❌ Disable sorting only (filtering still enabled)
+  },
+  {
+    title: 'Email',
+    dataIndex: 'email',
+    // Both sorting and filtering enabled (default)
+  },
+]
+
+<TablePaginationNew
+  columns={columns}
+  enableColumnSorter={true}
+  enableColumnFilter={true}
+/>
+```
+    });
+  }}
+/>
+```
+
 **Migration from onSort:**
 ```jsx
 // OLD (deprecated)
