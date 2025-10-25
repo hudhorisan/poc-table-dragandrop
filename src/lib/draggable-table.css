@@ -1,0 +1,72 @@
+/* === Draggable Table Library Styles === */
+
+/* Basic table styles - Only for vanilla DraggableTable */
+.draggable-table-wrapper table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  table-layout: fixed; 
+}
+
+.draggable-table-wrapper th,
+.draggable-table-wrapper td { 
+  border: 1px solid #ddd; 
+  padding: 8px; 
+  text-align: left; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
+}
+
+/* Draggable header cursor - untuk vanilla table */
+.draggable-table-wrapper th[draggable="true"] { 
+  cursor: grab; 
+  position: relative; 
+}
+
+.draggable-table-wrapper th[draggable="true"]:active { 
+  cursor: grabbing; 
+}
+
+/* Resize handle styling */
+.resize-handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  cursor: col-resize;
+  background-color: transparent;
+  z-index: 10;
+}
+
+.resize-handle:hover {
+  background-color: #007acc;
+}
+
+/* Frozen column styling */
+.frozen-column {
+  background-color: #f8f9fa !important;
+  border-left: 2px solid #007acc !important;
+}
+
+.draggable-table-wrapper th.frozen-column,
+.ant-table-thead > tr > th.frozen-column {
+  cursor: not-allowed !important;
+}
+
+.draggable-table-wrapper th.frozen-column:hover,
+.ant-table-thead > tr > th.frozen-column:hover {
+  background-color: #e9ecef !important;
+}
+
+/* Ant Design Table draggable header styles - lebih spesifik */
+.ant-table-thead > tr > th[draggable="true"] {
+  cursor: move !important;
+  user-select: none;
+  position: relative;
+}
+
+.ant-table-thead > tr > th[draggable="true"]:active {
+  cursor: grabbing !important;
+}
+

@@ -1,0 +1,38 @@
+{
+  "name": "poc-table-dragandrop",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Draggable table React component (POC) with reorderable columns",
+  "author": "hudhodev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hudhodev/poc-table-dragandrop.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "build:lib": "vite build --config vite.lib.config.js",
+    "prepare": "npm run build:lib"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "antd": "^5.0.0"
+  },
+  "main": "dist/draggable-table.umd.js",
+  "module": "dist/draggable-table.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "vite": "5.4.2",
+    "@vitejs/plugin-react": "4.0.0"
+  }
+}

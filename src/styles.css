@@ -1,0 +1,73 @@
+body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; padding: 24px; }
+.app { max-width: 1000px; margin: 0 auto }
+
+/* Vanilla table styles - scoped to draggable-table-wrapper */
+.draggable-table-wrapper table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  table-layout: fixed; 
+}
+
+.draggable-table-wrapper th,
+.draggable-table-wrapper td { 
+  border: 1px solid #ddd; 
+  padding: 8px; 
+  text-align: left; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
+}
+
+/* Draggable header cursor: hand (grab) */
+.draggable-table-wrapper th[draggable="true"] { 
+  cursor: grab; 
+  position: relative; 
+}
+
+.draggable-table-wrapper th[draggable="true"]:active { 
+  cursor: grabbing; 
+}
+
+/* Resize handle styling */
+.resize-handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  cursor: col-resize;
+  background-color: transparent;
+  z-index: 10;
+}
+
+.resize-handle:hover {
+  background-color: #007acc;
+}
+
+/* Frozen column styling */
+.frozen-column {
+  background-color: #f8f9fa !important;
+  border-left: 2px solid #007acc !important;
+}
+
+th.frozen-column {
+  cursor: not-allowed !important;
+}
+
+th.frozen-column:hover {
+  background-color: #e9ecef !important;
+}
+
+/* Ant Design Table draggable header styles */
+.ant-table-thead > tr > th[draggable="true"] {
+  cursor: grab !important;
+  user-select: none;
+}
+
+.ant-table-thead > tr > th[draggable="true"]:active {
+  cursor: grabbing !important;
+}
+
+/* Keep row dragging cursor separate (if rows are draggable) */
+tr[draggable="true"] { cursor: default }
+tr[draggable="true"]:active { cursor: grabbing }
