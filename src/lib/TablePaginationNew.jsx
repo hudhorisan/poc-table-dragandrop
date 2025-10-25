@@ -25,6 +25,8 @@ const TablePaginationNew = ({
   type = "BE",
   enableDragColumn = false,
   freezeColumns = [], // Array of column indices or keys to freeze, e.g. [0, 'email'] or ['id', 'name']
+  enableColumnSorter = false, // Enable built-in column sorting
+  enableColumnFilter = false, // Enable built-in column filtering
 }) => {
   const [optionSelectedCol, setOptionSelectedCol] = useState([]);
   const [totalDataFE, setTotalDataFE] = useState(0);
@@ -324,11 +326,54 @@ const TablePaginationNew = ({
           ...col,
           width: colWidth,
           className: frozenInfo.frozen ? 'frozen-column-header' : '',
+          // Disable sorter and filters if column already has them defined
+          ...(enableColumnSorter && !col.sorter && col.dataIndex && {
+            sorter: (a, b) => {
+              const aVal = a[col.dataIndex];
+              const bVal = b[col.dataIndex];
+              
+              // Handle different data types
+              if (typeof aVal === 'string' && typeof bVal === 'string') {
+                return aVal.localeCompare(bVal);
+              }
+              if (typeof aVal === 'number' && typeof bVal === 'number') {
+                return aVal - bVal;
+              }
+              // Default string comparison
+              return String(aVal).localeCompare(String(bVal));
+            },
+            showSorterTooltip: false,
+          }),
           onHeaderCell: () => ({
             draggable: !frozenInfo.frozen,
-            onDragStart: (e) => handleHeaderDragStart(e, index),
+            onDragStart: (e) => {
+              // Prevent drag if clicking on filter/sort icons
+              const target = e.target;
+              if (target.closest('.ant-table-filter-trigger') || 
+                  target.closest('.ant-table-column-sorter') ||
+                  target.closest('.ant-dropdown-trigger')) {
+                e.preventDefault();
+                return;
+              }
+              handleHeaderDragStart(e, index);
+            },
             onDragOver: (e) => handleHeaderDragOver(e, index),
             onDragEnd: handleHeaderDragEnd,
+            onMouseEnter: (e) => {
+              // Change cursor to pointer when hovering sort/filter icons
+              const target = e.target;
+              const th = target.closest('th');
+              if (th && (target.closest('.ant-table-filter-trigger') || 
+                         target.closest('.ant-table-column-sorter'))) {
+                th.style.cursor = 'pointer';
+              }
+            },
+            onMouseLeave: (e) => {
+              const th = e.target.closest('th');
+              if (th && !frozenInfo.frozen) {
+                th.style.cursor = 'move';
+              }
+            },
             style: { 
               cursor: frozenInfo.frozen ? 'not-allowed' : 'move', 
               userSelect: 'none',
@@ -347,16 +392,132 @@ const TablePaginationNew = ({
           colConfig.fixed = frozenInfo.position; // 'left' or 'right'
         }
         
+        // Add filter FIRST (will appear on left side of header)
+        if (enableColumnFilter && !col.filters && !col.filterDropdown && col.dataIndex) {
+          // Get unique values for this column
+          const uniqueValues = [...new Set(dataSource.map(item => item[col.dataIndex]))]
+            .filter(val => val !== null && val !== undefined && val !== '')
+            .sort();
+          
+          // If there are reasonable number of unique values, create dropdown filter
+          if (uniqueValues.length > 0 && uniqueValues.length <= 50) {
+            colConfig.filters = uniqueValues.map(val => ({
+              text: String(val),
+              value: val,
+            }));
+            colConfig.onFilter = (value, record) => record[col.dataIndex] === value;
+            colConfig.filterMode = 'menu';
+          } else {
+            // For too many unique values or text columns, use search filter
+            colConfig.filterDropdown = ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+              <div style={{ padding: 8 }} onClick={(e) => e.stopPropagation()}>
+                <input
+                  placeholder={`Search ${col.title}`}
+                  value={selectedKeys[0]}
+                  onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                  onPressEnter={() => confirm()}
+                  style={{ width: 188, marginBottom: 8, display: 'block', padding: '4px 11px', border: '1px solid #d9d9d9', borderRadius: '2px' }}
+                />
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <button
+                    type="button"
+                    onClick={() => confirm()}
+                    style={{ width: 90, padding: '4px 15px', border: '1px solid #d9d9d9', background: '#1890ff', color: 'white', borderRadius: '2px', cursor: 'pointer' }}
+                  >
+                    Search
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { clearFilters(); confirm(); }}
+                    style={{ width: 90, padding: '4px 15px', border: '1px solid #d9d9d9', background: 'white', borderRadius: '2px', cursor: 'pointer' }}
+                  >
+                    Reset
+                  </button>
+                </div>
+              </div>
+            );
+            colConfig.onFilter = (value, record) => {
+              const recordValue = record[col.dataIndex];
+              return recordValue ? String(recordValue).toLowerCase().includes(String(value).toLowerCase()) : false;
+            };
+          }
+        }
+        
         return colConfig;
       });
     }
     
     return filtered.map((col) => {
       const columnKey = col.dataIndex || col.key;
-      return {
+      const colConfig = {
         ...col,
         width: columnWidths[columnKey] || col.width || 150,
       };
+      
+      // Add sorter for non-draggable mode
+      if (enableColumnSorter && !col.sorter && col.dataIndex) {
+        colConfig.sorter = (a, b) => {
+          const aVal = a[col.dataIndex];
+          const bVal = b[col.dataIndex];
+          
+          if (typeof aVal === 'string' && typeof bVal === 'string') {
+            return aVal.localeCompare(bVal);
+          }
+          if (typeof aVal === 'number' && typeof bVal === 'number') {
+            return aVal - bVal;
+          }
+          return String(aVal).localeCompare(String(bVal));
+        };
+      }
+      
+      // Add filter for non-draggable mode
+      if (enableColumnFilter && !col.filters && !col.filterDropdown && col.dataIndex) {
+        const uniqueValues = [...new Set(dataSource.map(item => item[col.dataIndex]))]
+          .filter(val => val !== null && val !== undefined && val !== '')
+          .sort();
+        
+        if (uniqueValues.length > 0 && uniqueValues.length <= 50) {
+          colConfig.filters = uniqueValues.map(val => ({
+            text: String(val),
+            value: val,
+          }));
+          colConfig.onFilter = (value, record) => record[col.dataIndex] === value;
+        } else {
+          colConfig.filterDropdown = ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+            <div style={{ padding: 8 }}>
+              <input
+                placeholder={`Search ${col.title}`}
+                value={selectedKeys[0]}
+                onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                onPressEnter={() => confirm()}
+                style={{ width: 188, marginBottom: 8, display: 'block', padding: '4px 11px', border: '1px solid #d9d9d9', borderRadius: '2px' }}
+              />
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <button
+                  type="button"
+                  onClick={() => confirm()}
+                  style={{ width: 90, padding: '4px 15px', border: '1px solid #d9d9d9', background: '#1890ff', color: 'white', borderRadius: '2px', cursor: 'pointer' }}
+                >
+                  Search
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { clearFilters(); confirm(); }}
+                  style={{ width: 90, padding: '4px 15px', border: '1px solid #d9d9d9', background: 'white', borderRadius: '2px', cursor: 'pointer' }}
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          );
+          colConfig.onFilter = (value, record) => {
+            const recordValue = record[col.dataIndex];
+            return recordValue ? String(recordValue).toLowerCase().includes(String(value).toLowerCase()) : false;
+          };
+        }
+      }
+      
+      return colConfig;
     });
   };
   const onChangeFE = (_, __, ___, extra) => {

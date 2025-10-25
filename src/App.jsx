@@ -106,9 +106,9 @@ export default function App() {
         />
       </section>
 
-            <section style={{ marginBottom: '40px' }}>
-        <h2>2. TablePaginationNew (Ant Design) - TEST RESIZE & FREEZE</h2>
-        <p>✅ Drag column headers to reorder • ✅ Resize columns • ✅ Column visibility • ✅ ID frozen LEFT, Position frozen RIGHT (sticky when scroll)</p>
+      <section style={{ marginBottom: '40px' }}>
+        <h2>2. TablePaginationNew (Ant Design) - ALL FEATURES</h2>
+        <p>✅ Drag to reorder • ✅ Resize • ✅ Freeze (ID left) • ✅ Sort (click header) • ✅ Filter (dropdown/search) • ✅ Column visibility</p>
         <div style={{ width: '100%', overflowX: 'auto' }}>
           <TablePaginationNew
             idTable="test-table"
@@ -123,6 +123,8 @@ export default function App() {
               0,  // Simple format: freeze first column (ID) on LEFT
               { key: 'country', position: 'right' }  // Advanced format: freeze 'country' column on RIGHT
             ]}
+            enableColumnSorter={true}  // ✅ Enable built-in sorting (click header to sort)
+            enableColumnFilter={true}  // ✅ Enable built-in filtering (dropdown/search in header)
             useSelect={true}
             usePagination={true}
             type="FE"

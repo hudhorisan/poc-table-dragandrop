@@ -185,6 +185,70 @@ freezeColumns={[
 - Can still be resized
 - Use with `tableScrolled={{ x: <width> }}` to enable horizontal scroll
 
+**Sort & Filter Usage:**
+
+**Built-in Column Sorting:**
+```jsx
+<TablePaginationNew
+  enableColumnSorter={true}  // Enable sorting on all columns
+  // For Frontend (FE) sorting - automatic
+  type="FE"
+  
+  // For Backend (BE) sorting - handle in onChange
+  type="BE"
+  onChange={(pagination, filters, sorter) => {
+    if (sorter.field) {
+      // sorter.field = column dataIndex
+      // sorter.order = 'ascend' | 'descend' | undefined
+      fetchDataFromAPI({
+        page: pagination.current,
+        sortField: sorter.field,
+        sortOrder: sorter.order
+      });
+    }
+  }}
+/>
+```
+
+**Built-in Column Filtering:**
+```jsx
+<TablePaginationNew
+  enableColumnFilter={true}  // Enable filtering on all columns
+  // Automatically creates:
+  // - Dropdown filter for columns with ≤50 unique values
+  // - Search filter for columns with >50 values or long text
+  
+  // For Frontend (FE) - automatic
+  type="FE"
+  
+  // For Backend (BE) - handle in onChange
+  type="BE"
+  onChange={(pagination, filters, sorter) => {
+    // filters = { columnKey: [selectedValues] }
+    fetchDataFromAPI({
+      page: pagination.current,
+      filters: filters
+    });
+  }}
+/>
+```
+
+**Migration from onSort:**
+```jsx
+// OLD (deprecated)
+<TablePaginationNew
+  onSort={(pagination, filters, sorter) => { /* handle sort */ }}
+/>
+
+// NEW (recommended)
+<TablePaginationNew
+  enableColumnSorter={true}
+  onChange={(pagination, filters, sorter) => { 
+    // onChange now handles pagination, filters, AND sorting
+  }}
+/>
+```
+
 
 **Column Resize Usage:**
 - When `enableDragColumn={true}`, a resize handle (⋮) appears at the **right edge** of each column header
@@ -201,11 +265,13 @@ freezeColumns={[
 | `dataSource` | `array` | required | Data array for table |
 | `columns` | `array` | required | Ant Design column definitions |
 | `enableDragColumn` | `boolean` | `false` | Enable column drag, reorder & resize |
+| `enableColumnSorter` | `boolean` | `false` | Enable built-in column sorting |
+| `enableColumnFilter` | `boolean` | `false` | Enable built-in column filtering |
 | `freezeColumns` | `array` | - | Array of column indices or keys to freeze |
 | `current` | `number` | - | Current page number |
 | `pageSize` | `number` | - | Items per page |
 | `totalData` | `number` | - | Total records (for BE pagination) |
-| `onChange` | `function` | - | Page change callback |
+| `onChange` | `function` | - | Callback for pagination, filter, sort changes |
 | `usePagination` | `boolean` | `true` | Show pagination |
 | `useSelect` | `boolean` | `true` | Show column selector |
 | `type` | `"BE" \| "FE"` | `"BE"` | Pagination type |

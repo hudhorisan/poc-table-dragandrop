@@ -49,6 +49,36 @@
   border-left: 2px solid #007acc !important;
 }
 
+/* Ant Design Table - Sort and Filter icons cursor */
+.ant-table-filter-trigger,
+.ant-table-column-sorter,
+.ant-table-column-sorter-up,
+.ant-table-column-sorter-down,
+.ant-table-column-sorter-inner,
+.anticon-filter,
+.anticon-caret-up,
+.anticon-caret-down {
+  cursor: pointer !important;
+}
+
+/* Increase clickable area for sort arrows */
+.ant-table-column-sorter {
+  padding: 0 4px !important;
+}
+
+.ant-table-column-sorter-inner {
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  min-width: 16px !important;
+}
+
+/* Prevent dragging when hovering filter/sort */
+.ant-table-thead > tr > th:has(.ant-table-filter-trigger:hover),
+.ant-table-thead > tr > th:has(.ant-table-column-sorter:hover) {
+  cursor: pointer !important;
+}
+
 .draggable-table-wrapper th.frozen-column {
   cursor: not-allowed !important;
 }
