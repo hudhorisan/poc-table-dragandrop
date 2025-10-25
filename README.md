@@ -45,6 +45,10 @@ Usage examples
 npm install poc-table-dragandrop antd
 ```
 
+**Requirements:**
+- React ^18.0.0
+- Ant Design ^4.0.0 or ^5.0.0 (for TablePaginationNew component)
+
 **1. DraggableTable (Vanilla React)**
 
 ```js
@@ -144,6 +148,12 @@ function App() {
   )
 }
 ```
+
+**Column Resize Usage:**
+- When `enableDragColumn={true}`, hover near the **right edge** (last 10px) of any column header
+- The cursor will automatically change to **resize cursor** (`col-resize`)
+- Click and drag to resize the column (minimum width: 50px)
+- Drag the header (not the edge) to reorder columns
 
 **All TablePaginationNew Props:**
 

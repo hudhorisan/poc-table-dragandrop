@@ -138,10 +138,13 @@ const TablePaginationNew = ({
     if (enableDragColumn) {
       return filtered.map((col, index) => {
         const columnKey = col.dataIndex || col.key;
+        const originalTitle = col.title;
+        
         return {
           ...col,
           width: columnWidths[columnKey] || col.width || 150,
-          onHeaderCell: () => ({
+          title: originalTitle,
+          onHeaderCell: (column) => ({
             draggable: true,
             onDragStart: (e) => handleHeaderDragStart(e, index),
             onDragOver: (e) => handleHeaderDragOver(e, index),
@@ -149,30 +152,25 @@ const TablePaginationNew = ({
             style: { 
               cursor: 'move', 
               userSelect: 'none',
-              position: 'relative'
+              position: 'relative',
+              paddingRight: '20px',
+            },
+            onMouseMove: (e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const isNearRightEdge = rect.right - e.clientX < 10;
+              e.currentTarget.style.cursor = isNearRightEdge ? 'col-resize' : 'move';
+            },
+            onMouseDown: (e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const isNearRightEdge = rect.right - e.clientX < 10;
+              
+              if (isNearRightEdge) {
+                e.preventDefault();
+                e.stopPropagation();
+                onResizeStart(e, columnKey);
+              }
             },
           }),
-          title: (
-            <div style={{ position: 'relative', width: '100%' }}>
-              <span>{col.title}</span>
-              <div
-                className="resize-handle"
-                onMouseDown={(e) => onResizeStart(e, columnKey)}
-                style={{
-                  position: 'absolute',
-                  right: -8,
-                  top: -16,
-                  bottom: -16,
-                  width: '8px',
-                  cursor: 'col-resize',
-                  backgroundColor: 'transparent',
-                  zIndex: 10,
-                }}
-                onClick={(e) => e.stopPropagation()}
-                onDragStart={(e) => e.preventDefault()}
-              />
-            </div>
-          ),
         };
       });
     }

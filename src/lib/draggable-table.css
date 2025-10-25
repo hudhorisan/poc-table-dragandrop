@@ -61,31 +61,28 @@
 
 /* Ant Design Table draggable header styles - lebih spesifik */
 .ant-table-thead > tr > th[draggable="true"] {
-  cursor: move !important;
   user-select: none;
   position: relative;
-}
-
-.ant-table-thead > tr > th[draggable="true"]:active {
-  cursor: grabbing !important;
-}
-
-/* Ant Design Table resize handle styles */
-.ant-table-thead .resize-handle {
-  position: absolute;
-  right: -8px;
-  top: 0;
-  bottom: 0;
-  width: 8px;
-  cursor: col-resize;
-  background-color: transparent;
-  z-index: 10;
-}
-
-.ant-table-thead .resize-handle:hover {
-  background-color: rgba(0, 122, 204, 0.3);
+  padding-right: 20px !important;
 }
 
 .ant-table-thead > tr > th {
   position: relative;
+  overflow: visible !important;
+}
+
+/* Visual indicator for resize area - optional */
+.ant-table-thead > tr > th[draggable="true"]::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  background: transparent;
+  pointer-events: none;
+}
+
+.ant-table-thead > tr > th[draggable="true"]:hover::after {
+  background: rgba(24, 144, 255, 0.1);
 }
