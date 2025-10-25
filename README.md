@@ -150,10 +150,12 @@ function App() {
 ```
 
 **Column Resize Usage:**
-- When `enableDragColumn={true}`, hover near the **right edge** (last 10px) of any column header
+- When `enableDragColumn={true}`, a resize handle (⋮) appears at the **right edge** of each column header
+- **Hover** over the handle to see it turn blue with a border
 - The cursor will automatically change to **resize cursor** (`col-resize`)
-- Click and drag to resize the column (minimum width: 50px)
-- Drag the header (not the edge) to reorder columns
+- **Click and drag** the handle to resize the column (minimum width: 50px)
+- **Drag the header center** (not the edge) to reorder columns
+- Resize is disabled during column drag to prevent conflicts
 
 **All TablePaginationNew Props:**
 

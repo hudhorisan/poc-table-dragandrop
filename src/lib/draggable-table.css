@@ -63,7 +63,6 @@
 .ant-table-thead > tr > th[draggable="true"] {
   user-select: none;
   position: relative;
-  padding-right: 20px !important;
 }
 
 .ant-table-thead > tr > th {
@@ -71,18 +70,26 @@
   overflow: visible !important;
 }
 
-/* Visual indicator for resize area - optional */
-.ant-table-thead > tr > th[draggable="true"]::after {
-  content: '';
+/* Custom resize handle */
+.resize-handle-custom {
   position: absolute;
-  right: 0;
+  right: -5px;
   top: 0;
   bottom: 0;
   width: 10px;
+  cursor: col-resize !important;
+  z-index: 1001;
   background: transparent;
-  pointer-events: none;
+  border-right: 2px solid transparent;
+  transition: border-color 0.2s;
 }
 
-.ant-table-thead > tr > th[draggable="true"]:hover::after {
+.resize-handle-custom:hover {
+  border-right-color: #1890ff;
   background: rgba(24, 144, 255, 0.1);
+}
+
+.resize-handle-custom:active {
+  border-right-color: #096dd9;
+  background: rgba(24, 144, 255, 0.2);
 }
