@@ -1,5 +1,5 @@
 import DraggableTable from './DraggableTable'
-import TablePaginationNew from './TablePagination'
+import TablePaginationNew from './TablePaginationNew'
 import './draggable-table.css'
 
 export { DraggableTable, TablePaginationNew }
