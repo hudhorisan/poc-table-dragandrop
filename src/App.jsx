@@ -48,15 +48,39 @@ const antdColumns = [
     key: 'position',
     width: 150,
   },
+  {
+    title: 'Phone',
+    dataIndex: 'phone',
+    key: 'phone',
+    width: 150,
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    key: 'address',
+    width: 250,
+  },
+  {
+    title: 'City',
+    dataIndex: 'city',
+    key: 'city',
+    width: 120,
+  },
+  {
+    title: 'Country',
+    dataIndex: 'country',
+    key: 'country',
+    width: 120,
+  },
 ]
 
 const antdDataSource = [
-  { key: '1', id: 1, name: 'John Doe', email: 'john@example.com', department: 'Engineering', position: 'Senior Dev' },
-  { key: '2', id: 2, name: 'Jane Smith', email: 'jane@example.com', department: 'Marketing', position: 'Manager' },
-  { key: '3', id: 3, name: 'Bob Johnson', email: 'bob@example.com', department: 'Sales', position: 'Director' },
-  { key: '4', id: 4, name: 'Alice Williams', email: 'alice@example.com', department: 'Design', position: 'Lead Designer' },
-  { key: '5', id: 5, name: 'Charlie Brown', email: 'charlie@example.com', department: 'Engineering', position: 'Developer' },
-  { key: '6', id: 6, name: 'Diana Prince', email: 'diana@example.com', department: 'HR', position: 'Specialist' },
+  { key: '1', id: 1, name: 'John Doe', email: 'john@example.com', department: 'Engineering', position: 'Senior Dev', phone: '123-456-7890', address: '123 Main St', city: 'New York', country: 'USA' },
+  { key: '2', id: 2, name: 'Jane Smith', email: 'jane@example.com', department: 'Marketing', position: 'Manager', phone: '123-456-7891', address: '456 Oak Ave', city: 'Los Angeles', country: 'USA' },
+  { key: '3', id: 3, name: 'Bob Johnson', email: 'bob@example.com', department: 'Sales', position: 'Director', phone: '123-456-7892', address: '789 Pine Rd', city: 'Chicago', country: 'USA' },
+  { key: '4', id: 4, name: 'Alice Williams', email: 'alice@example.com', department: 'Design', position: 'Lead Designer', phone: '123-456-7893', address: '321 Elm St', city: 'Boston', country: 'USA' },
+  { key: '5', id: 5, name: 'Charlie Brown', email: 'charlie@example.com', department: 'Engineering', position: 'Developer', phone: '123-456-7894', address: '654 Maple Dr', city: 'Seattle', country: 'USA' },
+  { key: '6', id: 6, name: 'Diana Prince', email: 'diana@example.com', department: 'HR', position: 'Specialist', phone: '123-456-7895', address: '987 Cedar Ln', city: 'Miami', country: 'USA' },
 ]
 
 export default function App() {
@@ -82,24 +106,30 @@ export default function App() {
         />
       </section>
 
-      <section style={{ marginBottom: '40px' }}>
-        <h2>2. TablePaginationNew (Ant Design) - TEST RESIZE</h2>
-        <p>✅ Drag column headers to reorder • ✅ Drag the right edge to resize • ✅ Column visibility selector</p>
-        <TablePaginationNew
-          idTable="test-table"
-          dataSource={antdDataSource}
-          columns={antdColumns}
-          current={currentPage}
-          pageSize={pageSize}
-          totalData={antdDataSource.length}
-          onChange={handlePageChange}
-          enableDragColumn={true}
-          useSelect={true}
-          usePagination={true}
-          type="FE"
-          loading={false}
-          tableScrolled={{ x: 1000 }}
-        />
+            <section style={{ marginBottom: '40px' }}>
+        <h2>2. TablePaginationNew (Ant Design) - TEST RESIZE & FREEZE</h2>
+        <p>✅ Drag column headers to reorder • ✅ Resize columns • ✅ Column visibility • ✅ ID frozen LEFT, Position frozen RIGHT (sticky when scroll)</p>
+        <div style={{ width: '100%', overflowX: 'auto' }}>
+          <TablePaginationNew
+            idTable="test-table"
+            dataSource={antdDataSource}
+            columns={antdColumns}
+            current={currentPage}
+            pageSize={pageSize}
+            totalData={antdDataSource.length}
+            onChange={handlePageChange}
+            enableDragColumn={true}
+            freezeColumns={[
+              0,  // Simple format: freeze first column (ID) on LEFT
+              { key: 'country', position: 'right' }  // Advanced format: freeze 'country' column on RIGHT
+            ]}
+            useSelect={true}
+            usePagination={true}
+            type="FE"
+            tableScrolled={{ x: 1500 }}
+            loading={false}
+          />
+        </div>
       </section>
     </div>
   )

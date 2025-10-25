@@ -24,6 +24,7 @@ const TablePaginationNew = ({
   onSort = () => {},
   type = "BE",
   enableDragColumn = false,
+  freezeColumns = [], // Array of column indices or keys to freeze, e.g. [0, 'email'] or ['id', 'name']
 }) => {
   const [optionSelectedCol, setOptionSelectedCol] = useState([]);
   const [totalDataFE, setTotalDataFE] = useState(0);
@@ -178,8 +179,48 @@ const TablePaginationNew = ({
     };
   }, [enableDragColumn, orderedColumns, optionSelectedCol]);
 
+  // Helper function to check if a column is frozen and get its position
+  // Returns: { frozen: boolean, position: 'left' | 'right' | null }
+  const isColumnFrozen = (columnIndex, columnKey) => {
+    if (!freezeColumns || freezeColumns.length === 0) {
+      return { frozen: false, position: null };
+    }
+    
+    // Check if any freeze config matches this column
+    for (const config of freezeColumns) {
+      // Simple format: number or string
+      if (typeof config === 'number' || typeof config === 'string') {
+        if (config === columnIndex || config === columnKey) {
+          return { frozen: true, position: 'left' }; // default to left
+        }
+      }
+      // Advanced format: object with index/key and position
+      else if (typeof config === 'object') {
+        const matchByIndex = config.index !== undefined && config.index === columnIndex;
+        const matchByKey = config.key !== undefined && config.key === columnKey;
+        
+        if (matchByIndex || matchByKey) {
+          return { frozen: true, position: config.position || 'left' };
+        }
+      }
+    }
+    
+    return { frozen: false, position: null };
+  };
+
   const handleHeaderDragStart = (e, index) => {
     if (!enableDragColumn) return;
+    
+    // Check if this column is frozen
+    const visibleCols = orderedColumns.filter(c => !optionSelectedCol.includes(c.title));
+    const columnKey = visibleCols[index]?.dataIndex || visibleCols[index]?.key;
+    
+    const frozenInfo = isColumnFrozen(index, columnKey);
+    if (frozenInfo.frozen) {
+      e.preventDefault();
+      return;
+    }
+    
     dragItem.current = index;
     e.dataTransfer.effectAllowed = 'move';
   };
@@ -194,6 +235,18 @@ const TablePaginationNew = ({
     const visibleCols = orderedColumns.filter((col) => {
       return !optionSelectedCol.includes(col.title);
     });
+    
+    // Check if target column is frozen
+    const targetColumnKey = visibleCols[index]?.dataIndex || visibleCols[index]?.key;
+    const dragColumnKey = visibleCols[dragIndex]?.dataIndex || visibleCols[dragIndex]?.key;
+    
+    // Prevent dropping onto frozen column or dragging frozen column
+    const targetFrozen = isColumnFrozen(index, targetColumnKey);
+    const dragFrozen = isColumnFrozen(dragIndex, dragColumnKey);
+    
+    if (targetFrozen.frozen || dragFrozen.frozen) {
+      return;
+    }
     
     // Reorder only the visible columns
     const [moved] = visibleCols.splice(dragIndex, 1);
@@ -260,24 +313,41 @@ const TablePaginationNew = ({
     });
     
     if (enableDragColumn) {
+      let leftOffset = 0;
+      
       return filtered.map((col, index) => {
         const columnKey = col.dataIndex || col.key;
+        const frozenInfo = isColumnFrozen(index, columnKey);
+        const colWidth = columnWidths[columnKey] || col.width || 150;
         
-        return {
+        const colConfig = {
           ...col,
-          width: columnWidths[columnKey] || col.width || 150,
+          width: colWidth,
+          className: frozenInfo.frozen ? 'frozen-column-header' : '',
           onHeaderCell: () => ({
-            draggable: true,
+            draggable: !frozenInfo.frozen,
             onDragStart: (e) => handleHeaderDragStart(e, index),
             onDragOver: (e) => handleHeaderDragOver(e, index),
             onDragEnd: handleHeaderDragEnd,
             style: { 
-              cursor: 'move', 
+              cursor: frozenInfo.frozen ? 'not-allowed' : 'move', 
               userSelect: 'none',
               position: 'relative',
+              ...(frozenInfo.frozen && {
+                backgroundColor: '#f5f5f5',
+                ...(frozenInfo.position === 'left' && { borderLeft: '3px solid #1890ff' }),
+                ...(frozenInfo.position === 'right' && { borderRight: '3px solid #1890ff' }),
+              }),
             },
           }),
         };
+        
+        // Add Ant Design fixed property for frozen columns
+        if (frozenInfo.frozen) {
+          colConfig.fixed = frozenInfo.position; // 'left' or 'right'
+        }
+        
+        return colConfig;
       });
     }
     

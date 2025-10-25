@@ -132,6 +132,7 @@ function App() {
       
       // Features
       enableDragColumn={true}  // ✅ Enable column dragging & resizing
+      freezeColumns={[0, 'email']}  // ✅ Freeze columns by index or key
       useSelect={true}         // Show column visibility selector
       loading={false}
       
@@ -149,6 +150,42 @@ function App() {
 }
 ```
 
+**Freeze Columns Usage:**
+
+The `freezeColumns` prop supports **two formats**:
+
+**1. Simple Format** (all frozen to LEFT):
+```jsx
+// Freeze by index
+freezeColumns={[0, 1, 2]}
+
+// Freeze by column key/dataIndex
+freezeColumns={['id', 'name']}
+
+// Mix index and key
+freezeColumns={[0, 'email', 2]}
+```
+
+**2. Advanced Format** (specify LEFT or RIGHT):
+```jsx
+freezeColumns={[
+  0,  // Simple: freeze index 0 on left (default)
+  'name',  // Simple: freeze 'name' on left (default)
+  { index: 2, position: 'left' },  // Freeze by index, specify left
+  { key: 'email', position: 'left' },  // Freeze by key, specify left
+  { key: 'action', position: 'right' }  // Freeze 'action' column on RIGHT
+]}
+```
+
+**Features:**
+- Frozen columns stick (sticky) when scrolling horizontally
+- Cannot be dragged or reordered
+- Visual indicator: gray background + blue border (left/right based on position)
+- Cursor changes to `not-allowed`
+- Can still be resized
+- Use with `tableScrolled={{ x: <width> }}` to enable horizontal scroll
+
+
 **Column Resize Usage:**
 - When `enableDragColumn={true}`, a resize handle (⋮) appears at the **right edge** of each column header
 - **Hover** over the handle to see it turn blue with a border
@@ -164,6 +201,7 @@ function App() {
 | `dataSource` | `array` | required | Data array for table |
 | `columns` | `array` | required | Ant Design column definitions |
 | `enableDragColumn` | `boolean` | `false` | Enable column drag, reorder & resize |
+| `freezeColumns` | `array` | - | Array of column indices or keys to freeze |
 | `current` | `number` | - | Current page number |
 | `pageSize` | `number` | - | Items per page |
 | `totalData` | `number` | - | Total records (for BE pagination) |
