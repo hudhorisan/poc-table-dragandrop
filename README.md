@@ -127,7 +127,7 @@ function App() {
       usePagination={true}
       
       // Features
-      enableDragColumn={true}  // ✅ Enable column dragging
+      enableDragColumn={true}  // ✅ Enable column dragging & resizing
       useSelect={true}         // Show column visibility selector
       loading={false}
       
@@ -151,7 +151,7 @@ function App() {
 |------|------|---------|-------------|
 | `dataSource` | `array` | required | Data array for table |
 | `columns` | `array` | required | Ant Design column definitions |
-| `enableDragColumn` | `boolean` | `false` | Enable column drag & reorder |
+| `enableDragColumn` | `boolean` | `false` | Enable column drag, reorder & resize |
 | `current` | `number` | - | Current page number |
 | `pageSize` | `number` | - | Items per page |
 | `totalData` | `number` | - | Total records (for BE pagination) |

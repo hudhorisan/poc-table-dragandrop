@@ -70,3 +70,22 @@
   cursor: grabbing !important;
 }
 
+/* Ant Design Table resize handle styles */
+.ant-table-thead .resize-handle {
+  position: absolute;
+  right: -8px;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  background-color: transparent;
+  z-index: 10;
+}
+
+.ant-table-thead .resize-handle:hover {
+  background-color: rgba(0, 122, 204, 0.3);
+}
+
+.ant-table-thead > tr > th {
+  position: relative;
+}
