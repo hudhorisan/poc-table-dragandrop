@@ -49,17 +49,15 @@
   border-left: 2px solid #007acc !important;
 }
 
-.draggable-table-wrapper th.frozen-column,
-.ant-table-thead > tr > th.frozen-column {
+.draggable-table-wrapper th.frozen-column {
   cursor: not-allowed !important;
 }
 
-.draggable-table-wrapper th.frozen-column:hover,
-.ant-table-thead > tr > th.frozen-column:hover {
+.draggable-table-wrapper th.frozen-column:hover {
   background-color: #e9ecef !important;
 }
 
-/* Ant Design Table draggable header styles - lebih spesifik */
+/* Ant Design Table - minimal override, no background color changes */
 .ant-table-thead > tr > th[draggable="true"] {
   user-select: none;
   position: relative;
