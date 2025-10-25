@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hudhodev/poc-table-dragandrop.git"
+    "url": "https://github.com/hudhorisan/poc-table-dragandrop.git"
   },
   "scripts": {
     "dev": "vite",
