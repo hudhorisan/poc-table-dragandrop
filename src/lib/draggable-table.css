@@ -144,11 +144,6 @@
 
 /* Frozen column header styling */
 .ant-table-thead > tr > th.frozen-column-header {
-  background-color: #f5f5f5 !important;
   border-left: 3px solid #1890ff !important;
   cursor: not-allowed !important;
-}
-
-.ant-table-thead > tr > th.frozen-column-header:hover {
-  background-color: #e6f7ff !important;
 }
